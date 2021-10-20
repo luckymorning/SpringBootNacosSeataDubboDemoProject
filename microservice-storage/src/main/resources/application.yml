@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: microservice-storage
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        #        namespace: public # 默认的即为public空间，为了简便，所有服务的创建配置都使用的默认项
+        username: nacos
+        password: nacos
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/seata?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          username: root
+          password: root
+server:
+  port: 8002
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+    username: ${spring.cloud.nacos.discovery.username}
+    password: ${spring.cloud.nacos.discovery.password}
+  protocol:
+    port: -1
+
+seata:
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: ${spring.cloud.nacos.discovery.username}
+      password: ${spring.cloud.nacos.discovery.password}
+      data-id: seataServer.properties
+  registry:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: ${spring.cloud.nacos.discovery.username}
+      password: ${spring.cloud.nacos.discovery.password}
